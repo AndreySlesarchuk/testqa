@@ -1,5 +1,11 @@
 function startTest() {
+    clearScreen("questions");
     getQuestions();
+}
+
+function clearScreen(e) {
+    let myobj = document.getElementById(e);
+    if (myobj != null) myobj.remove();
 }
 
 // Массив (база) вопросов
@@ -39,11 +45,12 @@ let questions = [
 //     answers: [],
 //     correctAnswers: []
 // }
+
 // Конструктор с инициализацией объекта
-function Question() {
-    this.text = "";
-    this.answers = [];
-    this.correctAnswers = [];
+function Question(t, a, ca) {
+    this.text = t;
+    this.answers = a;
+    this.correctAnswers = ca;
     return this;
 }
 
@@ -82,8 +89,8 @@ function showQuestion(i, questionsDiv) {
         // Создаем строку checkbox
         let checkBox = document.createElement("input");
         checkBox.type = "checkBox";
-        checkBox.id = i;
-        nodeA = document.createTextNode(q.answers[i]);
+        checkBox.id = i.toString();
+        let nodeA = document.createTextNode(q.answers[i]);
         questionForm.appendChild(checkBox);
         questionForm.appendChild(nodeA);
     }
@@ -92,54 +99,58 @@ function showQuestion(i, questionsDiv) {
     questionForm.appendChild(document.createTextNode('--------------------------------------------'));
     // Добавляем(отрисовываем) в большой div нашу форму вопроса
     questionsDiv.appendChild(questionForm);
-};
+}
 
 // Создаем вопрос с ответами для добавления в базк
 function setQuestion() {
-    let q = new Question();
-    addQuestion(q);
-    addAnswers(q);
-    addCorrectAnswers(q);
+    // Получаем составные части вопроса
+    let questionText = getQuestionText();
+    let answersArr = getAnswers();
+    let correctAnswersArr = getCorrectAnswers();
+    // Создаем конструктором вопрос в переменной
+    let q = new Question(questionText, answersArr, correctAnswersArr);
+    // Добавляем созданный вопрос в базу (массив questions)
     questions.push(q);
-    console.log(q);
 }
 
 // Создаем новый вопрос и добавляем его текст
-function addQuestion(q) {
+function getQuestionText() {
     let qText = prompt(' Введите текст вопроса:')
     if (qText === "" || qText == null) {
         alert('Вы не ввели текст вопроса. Попробуйте добавить вопрос заново.')
     } else {
-        const questionsDiv = document.createElement("div");
-        questionsDiv.id = "questions";
-        document.body.appendChild(questionsDiv);
-        q.text = qText;
-        document.getElementById("questions").innerHTML =
-            "Вопрос: " + q.text;
-        console.log(q)
+        return qText;
+        //const questionsDiv = document.createElement("div");
+        //questionsDiv.id = "questions";
+        //document.body.appendChild(questionsDiv);
+        //q.text = qText;
+        //document.getElementById("questions").innerHTML =
+        //    "Вопрос: " + q.text;
     }
 }
 
 //  Добавляем варианты ответов
-function addAnswers (q) {
+function getAnswers () {
     let answerNum = 0;
+    let answersArray = [];
     while (answerNum < 4) {
         let answer = prompt('Введите вариант ответа ' + ++answerNum + ': ');
         if (answer !== "") {
-            q.answers.push(answer);
+            answersArray.push(answer);
         } else {
             answerNum--;
         }
     }
+    return answersArray;
 }
 
 //  Добавляем номера(индексы в массиве) верных ответов
-function addCorrectAnswers (q) {
+function getCorrectAnswers () {
+    let correctAnswersArray = [];
     while (true) {
         let a = getPrompt('номер(а) верного(ых) ответов через запятую:');
         if (a !== "" || a === "q") {
-            q.correctAnswers.push(a.split(','));
-            break;
+            return correctAnswersArray.push(a.split(','));
         } else {
             alert('Вы не ввели правильные варианты ответов. Попробуйте добавить вопрос заново.');
         }
