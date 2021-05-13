@@ -19,7 +19,7 @@ let questionsArray = [
             "Pyton",
             "DevOps",
         ],
-        "correctAnswers": [4]
+        "correctAnswers": [1, 4]
     },
     {
         "text": "Какие из перечисленных видов тестирования могут быть автоматизированы?",
