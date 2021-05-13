@@ -1,57 +1,130 @@
-function startTest() {
-    clearScreen("questions");
-    getQuestions();
+// Описание объекта вопроса с ответами
+// Конструктор с инициализацией объекта
+class Question {
+    constructor(t, a, ca) {
+        this.text = t;
+        this.answers = a;
+        this.correctAnswers = ca;
+        return this;
+    }
 }
 
-function clearScreen(e) {
-    let myobj = document.getElementById(e);
-    if (myobj != null) myobj.remove();
-}
-
-// Массив (база) вопросов
-let questions = [
+// База вопросов
+let questionsArray = [
     {
         "text": "Что из перечисленного не является языком программирования?",
-        "answers": ["HTML",
+        "answers": [
+            "HTML",
             "Java",
             "Pyton",
-            "DevOps"
+            "DevOps",
         ],
-        "correctAnswers": [0, 3]
+        "correctAnswers": [1, 4]
     },
     {
-        "text": "Выберите типы алгоритмов, которых не существует",
-        "answers": ["Алгоритм с ветвлением",
-            "Циклический безусловный",
-            "Циклический с параметром",
-            "Алгоритм с углублением"
+        "text": "Какие из перечисленных видов тестирования не могут быть автоматизированы?",
+        "answers": [
+            "UI тестирование",
+            "Юзабилити тестирование",
+            "Тестирование совместимости",
+            "Unit тестирование",
+        ],
+        "correctAnswers": [2]
+    },
+    {
+        "text": "Выберите вариант, который соответствует следующему предложению: 'Известно, что грымзик обязательно или полосат, или рогат, или то и другое вместе'",
+        "answers": [
+            "Грымзик не может быть безрогим",
+            "Грымзик не может быть однотонным и безрогим одновременно",
+            "Грымзик не может быть полосатым и безрогим одновременно",
+            "Грымзик не может быть однотонным и рогатым одновременно",
         ],
         "correctAnswers": [3]
     },
     {
         "text": "Какая (какие) из следующих конструкций используется (используются) для ветвления?",
-        "answers": ["switch case",
+        "answers": [
+            "switch case",
             "if else",
             "do while",
-            "for"
+            "for",
         ],
-        "correctAnswers": [0, 1]
+        "correctAnswers": [2, 1]
+    },
+    {
+        "text": "Какого (каких) метода (методов) тестирования не существует?",
+        "answers": [
+            "Метод белого ящика",
+            "Метод 'игры в ящик'",
+            "Метод 'кротовой норы'",
+            "Метод серого ящика",
+        ],
+        "correctAnswers": [2, 3, 4]
     }
 ];
 
-// Описание объекта вопроса с ответами
-// let Question = {
-//     text: String,
-//     answers: [],
-//     correctAnswers: []
-// }
+let buttonSubmit = document.createElement('button');
+buttonSubmit.textContent = 'Submit'
+buttonSubmit.setAttribute("onclick", "checkAnswers()");
 
-// Конструктор с инициализацией объекта
-function Question(t, a, ca) {
-    this.text = t;
-    this.answers = a;
-    this.correctAnswers = ca;
-    return this;
+const CC1 = 'Вы не ввели текст вопроса. Попробуйте добавить вопрос заново.';
+const CC2 = 'Вы не ввели текст N* варианта ответа. Попробуйте добавить вопрос заново.\n *N — номер вопроса.'
+const CC3 = 'Вы не ввели правильные варианты ответов. Попробуйте добавить вопрос заново.'
+const CC4 = 'Все вопросы должны иметь хотя бы один выбранный вариант ответа. Проверьте правильность заполнения.';
+// const CC5 = 'Количество верных ответов: ${validAnswersCount}  из  ${questionsCount}';
+// const CC6 = 'Поле может содержать только уникальные цифры 1, 2, 3, 4, разделенные запятой. Попробуйте добавить вопрос заново.';
+
+// Создаем вопрос с ответами для добавления в базк
+function setQuestion() {
+    // Получаем составные части вопроса
+    // Текст вопроса
+    let questionText = getQuestionText();
+    if (questionText == undefined) return null;
+    // Массив ответов
+    let answersArr = getAnswers();
+    for (let i = 0; i < answersArr.length; i++) {
+        if (answersArr[i] === null) {
+            alert('Введены некорретные ответы.');
+            return null;
+        }
+    }
+    // Массив номеров верных ответов
+    let correctAnswersArr = getCorrectAnswers();
+    // Создаем конструктором вопрос в переменной
+    let q = new Question(questionText, answersArr, correctAnswersArr);
+    // Добавляем созданный вопрос в базу (массив questions)
+    questionsArray.push(q);
+}
+
+// Начинаем тест
+function startTest() {
+    let buttonStartTest = document.getElementById('startTest');
+    buttonStartTest.setAttribute('disabled', "true");
+    let buttonAddQuestion = document.getElementById("addQuestion");
+    buttonAddQuestion.setAttribute('disabled', "true");
+    console.log(questionsArray);
+    getQuestions();
+}
+
+// Проверка всех ответов по кнопке buttonSubmit
+function checkAnswers() {
+    let formsArray = document.getElementsByTagName("form");
+    let questionsCount = formsArray.length;
+    let validAnswersCount = 0;
+    for (let x = 0; x < formsArray.length; x++) {
+        if (checkForm(formsArray[x]) == true) {
+            validAnswersCount++;
+        }
+    }
+    if (validateAllQuestionsWithAnswers(formsArray)) {
+        if (validAnswersCount == questionsCount) {
+            alert('Количество верных ответов: ' + validAnswersCount + ' из ' + questionsCount + '. Вы-молодец!');
+        } else {
+            alert('Количество верных ответов: ' + validAnswersCount + ' из ' + questionsCount + '. Есть еще куда расти!');
+        }
+    } else {
+        alert('Все вопросы должны иметь хотя бы один выбранный вариант ответа. Проверьте правильность заполнения.');
+    }
 }
 
 // Выбираем все вопросы из базы
@@ -59,8 +132,58 @@ function getQuestions() {
     const questionsDiv = document.createElement("div");
     questionsDiv.id = "questions";
     document.body.appendChild(questionsDiv);
-    for (let index = 0; index < questions.length; index++) {
+    for (let index = 0; index < questionsArray.length; index++) {
         showQuestion(index, questionsDiv);
+    }
+    questionsDiv.appendChild(buttonSubmit)
+}
+
+function validateAllQuestionsWithAnswers(formsArray) {
+    let validCheckedCount = 0;
+    for (let x = 0; x < formsArray.length; x++) {
+        let arrCheckBoxes = formsArray[x].getElementsByTagName("input");
+        for (let i = 0; i < arrCheckBoxes.length; i++) {
+            if (arrCheckBoxes[i].checked == true) {
+                validCheckedCount++;
+                break;
+            }
+        }
+    }
+    if (validCheckedCount < formsArray.length) {
+        return false;
+    }
+    return true;
+}
+
+function checkForm(form) {
+    console.log("Объект из переменной form = " + form.toString());
+    let arrCheckBoxes = form.getElementsByTagName("input");
+    console.log("Inputs из переменной form = " + arrCheckBoxes);
+    let questionNumber = +form.id.toString().substr(6, 2);
+    let indexQuestionNumber = questionNumber - 1;
+    let question = questionsArray[indexQuestionNumber];
+    let correctNumbersArray = question.correctAnswers;
+    let correctCountBase = correctNumbersArray.length;
+    let correctCountUser = 0;
+    for (let i = 0; i < arrCheckBoxes.length; i++) {
+        if (arrCheckBoxes[i].checked === true) {
+            if (correctNumbersArray.indexOf(i + 1) !== -1) {
+                correctCountUser++;
+            } else {
+                correctCountUser = 0;
+                break;
+            }
+        }
+    }
+    if (correctCountUser === correctCountBase) {
+        return true;
+    } else {
+        let totalScore = document.getElementById('questions');
+        totalScore.appendChild(document.createElement("br"));
+        let error = "Вопрос № " + questionNumber;
+        let node = document.createTextNode(error);
+        totalScore.appendChild(node);
+        return false;
     }
 }
 
@@ -69,8 +192,8 @@ function getQuestions() {
 // questionsDiv - область вывода на экране
 function showQuestion(i, questionsDiv) {
     // Достаем вопрос с ответами из массива
-    let q = questions[i];
-    // Вводим индекс вопроса = индекс в массиве + 1
+    let q = questionsArray[i];
+    // Вводим  вопроса = индекс в массиве + 1
     let index = i + 1;
     // Создаем элемент формы базовый в html документе
     const questionForm = document.createElement("form");
@@ -87,9 +210,9 @@ function showQuestion(i, questionsDiv) {
         // Перевод строки
         questionForm.appendChild(document.createElement("br"));
         // Создаем строку checkbox
-        let checkBox = document.createElement("input");
-        checkBox.type = "checkBox";
+        let checkBox = createCheckbox();
         checkBox.id = i.toString();
+
         let nodeA = document.createTextNode(q.answers[i]);
         questionForm.appendChild(checkBox);
         questionForm.appendChild(nodeA);
@@ -101,16 +224,10 @@ function showQuestion(i, questionsDiv) {
     questionsDiv.appendChild(questionForm);
 }
 
-// Создаем вопрос с ответами для добавления в базк
-function setQuestion() {
-    // Получаем составные части вопроса
-    let questionText = getQuestionText();
-    let answersArr = getAnswers();
-    let correctAnswersArr = getCorrectAnswers();
-    // Создаем конструктором вопрос в переменной
-    let q = new Question(questionText, answersArr, correctAnswersArr);
-    // Добавляем созданный вопрос в базу (массив questions)
-    questions.push(q);
+function createCheckbox() {
+    let checkBox = document.createElement("input");
+    checkBox.type = "checkBox";
+    return checkBox;
 }
 
 // Создаем новый вопрос и добавляем его текст
@@ -120,17 +237,11 @@ function getQuestionText() {
         alert('Вы не ввели текст вопроса. Попробуйте добавить вопрос заново.')
     } else {
         return qText;
-        //const questionsDiv = document.createElement("div");
-        //questionsDiv.id = "questions";
-        //document.body.appendChild(questionsDiv);
-        //q.text = qText;
-        //document.getElementById("questions").innerHTML =
-        //    "Вопрос: " + q.text;
     }
 }
 
 //  Добавляем варианты ответов
-function getAnswers () {
+function getAnswers() {
     let answerNum = 0;
     let answersArray = [];
     while (answerNum < 4) {
@@ -145,19 +256,47 @@ function getAnswers () {
 }
 
 //  Добавляем номера(индексы в массиве) верных ответов
-function getCorrectAnswers () {
-    let correctAnswersArray = [];
+function getCorrectAnswers() {
     while (true) {
-        let a = getPrompt('номер(а) верного(ых) ответов через запятую:');
-        if (a !== "" || a === "q") {
-            return correctAnswersArray.push(a.split(','));
+        let a = prompt('Введите номер(а) верного(ых) ответов через запятую:');
+        let correctAnswerArray = a.split(",").map(Number);
+        console.log("arr = " + correctAnswerArray);
+        if (validateCorrectAnswers(correctAnswerArray) == true) {
+            return correctAnswerArray;
         } else {
             alert('Вы не ввели правильные варианты ответов. Попробуйте добавить вопрос заново.');
+            //break;
         }
     }
 }
 
-let getPrompt = (headerText) => {
-    let startText = "Введите ";
-    return prompt(startText + headerText);
+// Проверка строки ответов
+function validateCorrectAnswers(arr) {
+    let validArray = [1, 2, 3, 4];
+    console.log("arr = " + arr);
+    for (let i = 0; i < arr.length; i++) {
+        if (validArray.indexOf(arr[i]) == -1) {
+            console.log("Нет такого элемента: " + arr[i]);
+            return false;
+        }
+    }
+    if (validateRepeat(arr)) {
+        alert("Номера ответов повторяются");
+        return false;
+    }
+    return true;
 }
+
+// Проверка повторяющихся значений
+function validateRepeat(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        for (let j = i + 1; j < arr.length; j++) {
+            if (arr[i] == arr[j]) {
+                return true; // если есть совпадение - true
+            } // тут все понятно?
+        }
+    }
+    return false;
+}
+
+
