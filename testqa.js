@@ -59,9 +59,8 @@ let questionsArray = [
             "Метод 'кротовой норы'",
             "Метод серого ящика",
         ],
-        "correctAnswers": [1, 3]
+        "correctAnswers": [2, 3, 4]
     }
-
 ];
 
 let buttonSubmit = document.createElement('button');
