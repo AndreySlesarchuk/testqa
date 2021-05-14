@@ -219,7 +219,7 @@ function showQuestion(i, questionsDiv) {
     }
     // Перевод строки
     questionForm.appendChild(document.createElement('br'));
-    questionForm.appendChild(document.createTextNode('--------------------------------------------'));
+    questionForm.appendChild(document.createTextNode('-------------------------------------------------'));
     // Добавляем(отрисовываем) в большой div нашу форму вопроса
     questionsDiv.appendChild(questionForm);
 }
