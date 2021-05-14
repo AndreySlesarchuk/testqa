@@ -115,14 +115,15 @@ function checkAnswers() {
             validAnswersCount++;
         }
     }
-    if (validateAllQuestionsWithAnswers(formsArray)) {
-        if (validAnswersCount == questionsCount) {
-            alert('Количество верных ответов: ' + validAnswersCount + ' из ' + questionsCount + '. Вы-молодец!');
-        } else {
-            alert('Количество верных ответов: ' + validAnswersCount + ' из ' + questionsCount + '. Есть еще куда расти!');
-        }
-    } else {
+
+    if (!validateAllQuestionsWithAnswers(formsArray)) {
         alert('Все вопросы должны иметь хотя бы один выбранный вариант ответа. Проверьте правильность заполнения.');
+        return null;
+    }
+    if (validAnswersCount == questionsCount) {
+        alert('Количество верных ответов: ' + validAnswersCount + ' из ' + questionsCount + '. Вы-молодец!');
+    } else {
+        alert('Количество верных ответов: ' + validAnswersCount + ' из ' + questionsCount + '. Есть еще куда расти!');
     }
 }
 
