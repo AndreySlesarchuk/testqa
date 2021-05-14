@@ -180,7 +180,7 @@ function checkForm(form) {
     } else {
         let totalScore = document.getElementById('questions');
         totalScore.appendChild(document.createElement("br"));
-        let error = "Вопрос № " + questionNumber;
+        let error = "Вопрос №: " + questionNumber;
         let node = document.createTextNode(error);
         totalScore.appendChild(node);
         return false;
