@@ -76,8 +76,7 @@ const CC4 = 'Все вопросы должны иметь хотя бы оди�
 
 // Создаем вопрос с ответами для добавления в базк
 function setQuestion() {
-    // Получаем составные части вопроса
-    // Текст вопроса
+    // Получаем составные части вопроса = Текст вопроса
     let questionText = getQuestionText();
     if (questionText == undefined) return null;
     // Массив ответов
@@ -116,14 +115,15 @@ function checkAnswers() {
             validAnswersCount++;
         }
     }
-    if (validateAllQuestionsWithAnswers(formsArray)) {
-        if (validAnswersCount == questionsCount) {
-            alert('Количество верных ответов: ' + validAnswersCount + ' из ' + questionsCount + '. Вы-молодец!');
-        } else {
-            alert('Количество верных ответов: ' + validAnswersCount + ' из ' + questionsCount + '. Есть еще куда расти!');
-        }
-    } else {
+
+    if (!validateAllQuestionsWithAnswers(formsArray)) {
         alert('Все вопросы должны иметь хотя бы один выбранный вариант ответа. Проверьте правильность заполнения.');
+        return null;
+    }
+    if (validAnswersCount == questionsCount) {
+        alert('Количество верных ответов: ' + validAnswersCount + ' из ' + questionsCount + '. Вы-молодец!');
+    } else {
+        alert('Количество верных ответов: ' + validAnswersCount + ' из ' + questionsCount + '. Есть еще куда расти!');
     }
 }
 
@@ -180,7 +180,7 @@ function checkForm(form) {
     } else {
         let totalScore = document.getElementById('questions');
         totalScore.appendChild(document.createElement("br"));
-        let error = "Вопрос № " + questionNumber;
+        let error = "Вопрос №: " + questionNumber;
         let node = document.createTextNode(error);
         totalScore.appendChild(node);
         return false;
@@ -219,7 +219,7 @@ function showQuestion(i, questionsDiv) {
     }
     // Перевод строки
     questionForm.appendChild(document.createElement('br'));
-    questionForm.appendChild(document.createTextNode('--------------------------------------------'));
+    questionForm.appendChild(document.createTextNode('-------------------------------------------------'));
     // Добавляем(отрисовываем) в большой div нашу форму вопроса
     questionsDiv.appendChild(questionForm);
 }
