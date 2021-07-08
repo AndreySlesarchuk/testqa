@@ -1,6 +1,6 @@
 // Описание объекта вопроса с ответами
 // Конструктор с инициализацией объекта
-class Question {
+class Cards {
     constructor(t, a, ca) {
         this.text = t;
         this.answers = a;
@@ -10,7 +10,7 @@ class Question {
 }
 
 // База вопросов
-let questionsArray = [
+let cardsArray = [
     {
         "text": "Что из перечисленного не является языком программирования?",
         "answers": [
@@ -90,9 +90,9 @@ function setQuestion() {
     // Массив номеров верных ответов
     let correctAnswersArr = getCorrectAnswers();
     // Создаем конструктором вопрос в переменной
-    let q = new Question(questionText, answersArr, correctAnswersArr);
+    let q = new Cards(questionText, answersArr, correctAnswersArr);
     // Добавляем созданный вопрос в базу (массив questions)
-    questionsArray.push(q);
+    cardsArray.push(q);
 }
 
 // Начинаем тест
@@ -101,7 +101,7 @@ function startTest() {
     buttonStartTest.setAttribute('disabled', "true");
     let buttonAddQuestion = document.getElementById("addQuestion");
     buttonAddQuestion.setAttribute('disabled', "true");
-    console.log(questionsArray);
+    console.log(cardsArray);
     getQuestions();
 }
 
@@ -132,7 +132,7 @@ function getQuestions() {
     const questionsDiv = document.createElement("div");
     questionsDiv.id = "questions";
     document.body.appendChild(questionsDiv);
-    for (let index = 0; index < questionsArray.length; index++) {
+    for (let index = 0; index < cardsArray.length; index++) {
         showQuestion(index, questionsDiv);
     }
     questionsDiv.appendChild(buttonSubmit)
@@ -161,7 +161,7 @@ function checkForm(form) {
     console.log("Inputs из переменной form = " + arrCheckBoxes);
     let questionNumber = +form.id.toString().substr(6, 2);
     let indexQuestionNumber = questionNumber - 1;
-    let question = questionsArray[indexQuestionNumber];
+    let question = cardsArray[indexQuestionNumber];
     let correctNumbersArray = question.correctAnswers;
     let correctCountBase = correctNumbersArray.length;
     let correctCountUser = 0;
@@ -192,7 +192,7 @@ function checkForm(form) {
 // questionsDiv - область вывода на экране
 function showQuestion(i, questionsDiv) {
     // Достаем вопрос с ответами из массива
-    let q = questionsArray[i];
+    let q = cardsArray[i];
     // Вводим  вопроса = индекс в массиве + 1
     let index = i + 1;
     // Создаем элемент формы базовый в html документе
